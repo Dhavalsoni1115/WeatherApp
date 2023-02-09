@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weatherapp/screens/city_screen.dart';
 import '../services/weather.dart';
 
 class LocationScreen extends StatefulWidget {
@@ -30,7 +31,7 @@ class _LocationScreenState extends State<LocationScreen> {
     setState(() {
       if (weatherdata == null) {
         temp = 0;
-        weathericon = 'null';
+        weathericon = null;
         weathermessage = "null";
         cityName = '';
         return;
@@ -57,7 +58,7 @@ class _LocationScreenState extends State<LocationScreen> {
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage("assets/images/weather1.gif"),
-                fit: BoxFit.cover)),
+                fit: BoxFit.fill)),
         child: Column(
           children: [
             Padding(
@@ -76,10 +77,26 @@ class _LocationScreenState extends State<LocationScreen> {
                       size: 50,
                     ),
                   ),
-                  Icon(
-                    Icons.location_city_outlined,
-                    color: Colors.white,
-                    size: 50,
+                  GestureDetector(
+                    onTap: () async {
+                      var locationName = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CityScreen(),
+                        ),
+                      );
+                      print(locationName);
+                      if (locationName != null) {
+                        var weatherdata =
+                            await weather.getCityWather(locationName);
+                        updateUI(weatherdata);
+                      }
+                    },
+                    child: Icon(
+                      Icons.location_city_outlined,
+                      color: Colors.white,
+                      size: 50,
+                    ),
                   ),
                 ],
               ),
